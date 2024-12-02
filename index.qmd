@@ -137,4 +137,4 @@ Para contestar las preguntas se utilizó el siguiente código. Para manipular lo
            color = "Nombre")
     ```
 
-    Se puede ver que efectivamente los grupos tienen un número de errores menor que la media entre los años 1950 y 2020. Además, se puede ver que los equipos solo participaron al tiempo en las grandes ligas de baseball entre el 2005 y el 2007. Por otro lado, se puede ver que hay una tendencia decreciente del número de errores a lo largo de los años.
+    Se puede ver que efectivamente los grupos tienen un número de errores menor que la media entre los años 1950 y 2020, además, se observa que los equipos solo participaron al tiempo en las grandes ligas de baseball entre el 2005 y el 2007. Por otro lado, hay una tendencia decreciente del número de errores a lo largo de los años, mostrando una mejora en el desempeño de los equipos.
