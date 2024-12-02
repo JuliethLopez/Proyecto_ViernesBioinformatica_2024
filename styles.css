@@ -1,0 +1,9 @@
+.scrolling {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.toc {
+  font-size: 0.9em;
+  margin-left: 20px;
+}

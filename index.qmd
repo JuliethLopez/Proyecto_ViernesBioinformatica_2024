@@ -1,0 +1,135 @@
+# Proyecto final {.unnumbered}
+
+[Proyecto final](https://eveliacoss.github.io/Defensiva_ggplot2024/Parte5.html) para el curso: [viernes de bioinformática 2024-2](https://github.com/EveliaCoss/ViernesBioinfo2024_parte2):
+
+### Datos y preguntas
+
+1.  El conjunto de datos utilizado fue **mlb_teams** del paquete openintro. Este conjunto de datos contiene información de equipos de las Grandes Ligas de Béisbol.
+
+    Para cargar los datos utilizamos el paquete **openintro**.
+
+    ```{r}
+    #| output: false
+    # libraries required
+    library(openintro) #data
+    library(data.table) #database manipulation
+    library(ggplot2) #Graphics
+    library(viridis) #Color palettes
+    library(plotly) #Interactive plots
+    library(stringr) # To work with strings
+
+    # load data
+    #?openintro::mlb_teams #information about the dataset
+    data = mlb_teams
+    ```
+
+    ```{r}
+    dim(data) #Dimension 2784   41
+    ```
+
+    ```{r}
+    #| class: scrolling
+    summary(data) #summary of variables in data
+    ```
+
+    ```{r}
+    #| class: scrolling
+    head(data) #first rows in data
+    ```
+
+    Podemos ver que la base de datos cuenta con 2784 filas y 41 columnas. Con **summary** podemos tener una vision general de las variables, por ejmplo, podemos ver que los datos corresponden a las Grandes Ligas de Beisbol entre 1876 y 2020, así como podemos ver estadísticas básicas de las variables numéricas e identificar la clase de todas las variables. Hay algunas que contienen NA's, por ejemplo, *strikeouts_by_batters* y *sacrifice_flies*, variables muy especificas del desempeño de los jugadores y de los equipos. Teniendo en cuenta esta revisión general, se plantean las siguientes preguntas:
+
+    1.  ¿Cómo ha sido el desempeño (*Rank*) de los equipos de besisbol a traves de los años?
+
+    2.  ¿Cuántos de los equipos en el top 20 de los que han jugado mas juegos, han jugado en casa y han jugado la liga NL? ¿Cuántos la liga AL? ¿Cuáles?
+
+    3.  ¿Cuáles equipos con un nombre de mas de dos palabras tienen mas de 3000 outs_pitches y han tenido menos errores que la media por año entre 1950-2020 y a qué ligas pertenecen?
+
+### Respuestas
+
+Para contestar las preguntas se utilizó el siguiente código. Para manipular los datos se empleó uno de los paquetes vistos en el curso: **data.table**
+
+1.  ¿Cómo ha sido el desempeño (*Rank*) de los equipos de besisbol a traves de los años?: En la gráfica se puede ver que el número de juegos jugados en general ha aumentado a lo largo de los años y ha disminuido su variabilidad, exceptuando algunos años en los que hubo menor cantidad de juegos y mayor varibilidad: 1918, 1919, 1972, 1981, 1994, 1995 y 2020. El número de juegos tuvo un crecimiento rápido entre 1876 y 1900, que se estabilizó después de 1900 y luego tuvo un ligero aumento a partir de 1960. En cuanto al desempeño de los equipos, se puede ver que ha tendido a mejorar, sin embargo, se puede ver que los puntos de cambio en la tendencia se ven rodeados de bajos rendimientos en los equipos.
+
+    ```{r}
+    # Transform data to manipulate it
+    data_dt = as.data.table(data)
+
+    # Add variable for labels in interactive plot
+    data_dt <- data_dt[,tooltip_text := paste("Team:", team_name, "<br>Year:", year, "<br>Rank:", rank, "<br>Games Played:", games_played)]
+
+    # Create the scatter plot
+    p <- ggplot(data_dt, aes(x = year, y = games_played, color = factor(rank), text = tooltip_text)) +
+      geom_point(alpha = 0.6) +  # alpha for transparency dots
+      scale_color_viridis_d(option = "plasma") +  # plasma: name of set of colors
+      labs(title = "Games Played vs Year with Team Rank",
+           x = "Year",
+           y = "Games Played",
+           color = "Rank")
+
+    # Convert to plotly
+    ggplotly(p, tooltip = "text")
+    ```
+
+2.  ¿Cuántos de los equipos en el top 20 de los que han jugado mas juegos, han jugado en casa y han jugado la liga NL? ¿Cuántos la liga AL? ¿Cuáles?
+
+    Para esta pregunta se realizó una función que encontrara el top x de equipos dada una variable, asemás se utilizó programación defensiva para asegurar que la función corra adecuadamente y si no que retorne un mensaje indicando el error.
+
+    ```{r}
+    #| error: true
+    # Function for teams in top x for a picked variable
+    top_teams = function(data, top_variable, number_top){
+      # Check variable name in character
+      stopifnot(is.character(top_variable))
+      # Ensure the variable exists in data
+      if (!(top_variable %in% colnames(data))) {
+        stop("Invalid variable name. Please check the variable name.")
+      }
+      # Check variable number is numeric
+      stopifnot(is.numeric(number_top))
+      # Find top teams for top_Variable
+      top_team = setorder(data[,sum(get(top_variable)),by=c("team_name")],V1)[1:number_top]
+      # Return top teams
+      return(top_team)
+    }
+
+    # Test the function
+    top_teams(data_dt, 20, 20) # wrong variable
+    top_teams(data_dt, "variable", 20) # wrong variable
+    top_teams(data_dt, "games_played", "20") # wrong top number
+    ```
+
+    Ahora que hemos verificado que la función esta bien, podemos utilizarla:
+
+    ```{r}
+    top_teams_gp = top_teams(data_dt, "games_played", 20) # top 20 teams for games_played
+    team_selected = data_dt[home_games>0 & (team_name %in% top_teams_gp$team_name),.(team_name,league_id)] # select from top teams those that achive the other conditions
+    team_selected
+
+    team_selected[,.N,by=league_id] #count number of teams per league
+    ```
+
+    Podemos ver que hay ocho equipos del top 20 de los que han jugado más juegos que cumplen con haber jugado en casa, de estos, dos son de la liga NL (National League) y seis de la liga AL (American League).
+
+3.  ¿Cuáles equipos con un nombre de más de dos palabras tienen mas de 3000 outs_pitches y han tenido menos errores que la media por año entre 1950-2020 y a qué ligas pertenecen?
+
+    ```{r}
+    mean_errors_year = data_dt[,.(mean_errors_year = mean(errors)),by=.(year)] # calculate mean error per year
+    data_dt_errors_year = data_dt[mean_errors_year,,on=c("year")] # Join mean error variable to original data base
+    head(data_dt_errors_year[,.(errors,mean_errors_year)])
+
+    # Find teams that achive the conditions
+    best_teams = data_dt_errors_year[,length_name := str_count(trimws(data_dt$team_name)," ")][outs_pitches>3000 & errors<mean_errors_year & 1950<year & year<2020 & length_name>2,.(team_name,year,league_id)]
+    best_teams
+
+    # Compare number of errors of these teams in all years
+    wins_best_team = data_dt_errors_year[team_name %in% best_teams$team_name,.(team_name,errors,year,mean_errors_year)]
+
+    # Plot line plot
+    ggplot(wins_best_team, aes(x = year, y = errors, color = factor(team_name))) +
+      geom_line(linewidth = 1) + 
+      geom_line(aes(x=year,y=mean_errors_year,color="Media de errores"), linewidth=1) +
+      ggtitle("Número de errores por año de los mejores equipos")
+    ```
+
+    Se puede ver que efectivamente los grupos tienen un número de errores menor que la media entre los años 1950 y 2020. Además, se puede ver que los equipos solo participaron al tiempo en las grandes ligas de baseball entre el 2005 y el 2007. Por otro lado, se puede ver que hay una tendencia decreciente del número de errores a lo largo de los años.

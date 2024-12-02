@@ -1,0 +1,28 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Proyecto_ViernesBioinformatica_2024"
+  author: "Julieth Andrea López Castiblanco"
+  date: "2024-12-02"
+  page-navigation: true
+  chapters:
+    - index.qmd
+    #- intro.qmd
+    #- summary.qmd
+    #- references.qmd
+  favicon: "cover.png"
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    css: styles.css
+  pdf:
+    documentclass: scrreprt
+
+editor: visual
+
