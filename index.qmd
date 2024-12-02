@@ -1,6 +1,6 @@
 # Proyecto final {.unnumbered}
 
-[Proyecto final](https://eveliacoss.github.io/Defensiva_ggplot2024/Parte5.html) para el curso: [viernes de bioinformática 2024-2](https://github.com/EveliaCoss/ViernesBioinfo2024_parte2):
+Proyecto final para el curso: [Viernes de bioinformática 2024-2](https://github.com/EveliaCoss/ViernesBioinfo2024_parte2):
 
 ### Datos y preguntas
 
@@ -73,7 +73,7 @@ Para contestar las preguntas se utilizó el siguiente código. Para manipular lo
 
 2.  ¿Cuántos de los equipos en el top 20 de los que han jugado mas juegos, han jugado en casa y han jugado la liga NL? ¿Cuántos la liga AL? ¿Cuáles?
 
-    Para esta pregunta se realizó una función que encontrara el top x de equipos dada una variable, asemás se utilizó programación defensiva para asegurar que la función corra adecuadamente y si no que retorne un mensaje indicando el error.
+    Para esta pregunta se realizó una función que encontrara el top x de equipos dada una variable. Además, se utilizó **programación defensiva**, uno de los temas vistos en el curso, para asegurar que la función corra adecuadamente y si no que retorne un mensaje indicando el error.
 
     ```{r}
     #| error: true
@@ -112,6 +112,8 @@ Para contestar las preguntas se utilizó el siguiente código. Para manipular lo
     Podemos ver que hay ocho equipos del top 20 de los que han jugado más juegos que cumplen con haber jugado en casa, de estos, dos son de la liga NL (National League) y seis de la liga AL (American League).
 
 3.  ¿Cuáles equipos con un nombre de más de dos palabras tienen mas de 3000 outs_pitches y han tenido menos errores que la media por año entre 1950-2020 y a qué ligas pertenecen?
+
+    Aquí nuevamente se hizo uso del paquete **data.table** , uno de los paquetes vistos en el curso.
 
     ```{r}
     mean_errors_year = data_dt[,.(mean_errors_year = mean(errors)),by=.(year)] # calculate mean error per year
