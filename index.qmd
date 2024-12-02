@@ -62,10 +62,10 @@ Para contestar las preguntas se utilizó el siguiente código. Para manipular lo
     p <- ggplot(data_dt, aes(x = year, y = games_played, color = factor(rank), text = tooltip_text)) +
       geom_point(alpha = 0.6) +  # alpha for transparency dots
       scale_color_viridis_d(option = "plasma") +  # plasma: name of set of colors
-      labs(title = "Games Played vs Year with Team Rank",
-           x = "Year",
-           y = "Games Played",
-           color = "Rank")
+      labs(title = "Juegos jugados vs año con rango de equipos",
+           x = "Año",
+           y = "Juegos jugados",
+           color = "Rango")
 
     # Convert to plotly
     ggplotly(p, tooltip = "text")
@@ -129,7 +129,10 @@ Para contestar las preguntas se utilizó el siguiente código. Para manipular lo
     ggplot(wins_best_team, aes(x = year, y = errors, color = factor(team_name))) +
       geom_line(linewidth = 1) + 
       geom_line(aes(x=year,y=mean_errors_year,color="Media de errores"), linewidth=1) +
-      ggtitle("Número de errores por año de los mejores equipos")
+      labs(title = "Número de errores por año de los mejores equipos",
+           x = "Año",
+           y = "Errores",
+           color = "Nombre")
     ```
 
     Se puede ver que efectivamente los grupos tienen un número de errores menor que la media entre los años 1950 y 2020. Además, se puede ver que los equipos solo participaron al tiempo en las grandes ligas de baseball entre el 2005 y el 2007. Por otro lado, se puede ver que hay una tendencia decreciente del número de errores a lo largo de los años.
