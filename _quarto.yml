@@ -5,20 +5,26 @@ project:
 book:
   title: "Proyecto_ViernesBioinformatica_2024"
   author: "Julieth Andrea López Castiblanco"
-  date: "2024-12-02"
+  date: "2024-12-04"
   page-navigation: true
   chapters:
     - index.qmd
     #- intro.qmd
     #- summary.qmd
     #- references.qmd
-  favicon: "cover.png"
+  # Information
+  repo-url: https://github.com/JuliethLopez/Proyecto_ViernesBioinformatica_2024 # link de Github
+  sharing: [twitter, facebook, linkedin]
+  favicon: "favicon.ico"
 
 bibliography: references.bib
 
 format:
   html:
-    theme: cosmo
+# Button to chenge team to light to dark
+    theme:
+      light: cosmo
+      dark: darkly
     toc: true
     css: styles.css
   pdf:

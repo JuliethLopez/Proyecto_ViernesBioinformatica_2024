@@ -4,50 +4,48 @@ Proyecto final para el curso: [Viernes de bioinformática 2024-2](https://github
 
 ### Datos y preguntas
 
-1.  El conjunto de datos utilizado fue **mlb_teams** del paquete openintro. Este conjunto de datos contiene información de equipos de las Grandes Ligas de Béisbol.
+El conjunto de datos utilizado fue **mlb_teams** del paquete openintro. Este conjunto de datos contiene información de equipos de las Grandes Ligas de Béisbol. Para cargar los datos utilizamos el paquete **openintro**.
 
-    Para cargar los datos utilizamos el paquete **openintro**.
+```{r}
+#| output: false
+# libraries required
+library(openintro) #data
+library(data.table) #database manipulation
+library(ggplot2) #Graphics
+library(viridis) #Color palettes
+library(plotly) #Interactive plots
+library(stringr) # To work with strings
 
-    ```{r}
-    #| output: false
-    # libraries required
-    library(openintro) #data
-    library(data.table) #database manipulation
-    library(ggplot2) #Graphics
-    library(viridis) #Color palettes
-    library(plotly) #Interactive plots
-    library(stringr) # To work with strings
+# load data
+#?openintro::mlb_teams #information about the dataset
+data = mlb_teams
+```
 
-    # load data
-    #?openintro::mlb_teams #information about the dataset
-    data = mlb_teams
-    ```
+```{r}
+dim(data) #Dimension 2784   41
+```
 
-    ```{r}
-    dim(data) #Dimension 2784   41
-    ```
+```{r}
+#| class: scrolling
+summary(data) #summary of variables in data
+```
 
-    ```{r}
-    #| class: scrolling
-    summary(data) #summary of variables in data
-    ```
+```{r}
+#| class: scrolling
+head(data) #first rows in data
+```
 
-    ```{r}
-    #| class: scrolling
-    head(data) #first rows in data
-    ```
+Podemos ver que la base de datos cuenta con 2784 filas y 41 columnas. Con **summary** podemos tener una vision general de las variables, por ejmplo, podemos ver que los datos corresponden a las Grandes Ligas de Beisbol entre 1876 y 2020, así como podemos ver estadísticas básicas de las variables numéricas e identificar la clase de todas las variables. Hay algunas que contienen NA's, por ejemplo, *strikeouts_by_batters* y *sacrifice_flies*, variables muy especificas del desempeño de los jugadores y de los equipos. Teniendo en cuenta esta revisión general, se plantean las siguientes preguntas:
 
-    Podemos ver que la base de datos cuenta con 2784 filas y 41 columnas. Con **summary** podemos tener una vision general de las variables, por ejmplo, podemos ver que los datos corresponden a las Grandes Ligas de Beisbol entre 1876 y 2020, así como podemos ver estadísticas básicas de las variables numéricas e identificar la clase de todas las variables. Hay algunas que contienen NA's, por ejemplo, *strikeouts_by_batters* y *sacrifice_flies*, variables muy especificas del desempeño de los jugadores y de los equipos. Teniendo en cuenta esta revisión general, se plantean las siguientes preguntas:
+1.  ¿Cómo ha sido el desempeño (*Rank*) de los equipos de besisbol a traves de los años?
 
-    1.  ¿Cómo ha sido el desempeño (*Rank*) de los equipos de besisbol a traves de los años?
+2.  ¿Cuántos de los equipos en el top 20 de los que han jugado mas juegos, han jugado en casa y han jugado la liga NL? ¿Cuántos la liga AL? ¿Cuáles?
 
-    2.  ¿Cuántos de los equipos en el top 20 de los que han jugado mas juegos, han jugado en casa y han jugado la liga NL? ¿Cuántos la liga AL? ¿Cuáles?
-
-    3.  ¿Cuáles equipos con un nombre de mas de dos palabras tienen mas de 3000 outs_pitches y han tenido menos errores que la media por año entre 1950-2020 y a qué ligas pertenecen?
+3.  ¿Cuáles equipos con un nombre de mas de dos palabras tienen mas de 3000 outs_pitches y han tenido menos errores que la media por año entre 1950-2020 y a qué ligas pertenecen?
 
 ### Respuestas
 
-Para contestar las preguntas se utilizó el siguiente código. Para manipular los datos se empleó uno de los paquetes vistos en el curso: **data.table**
+Para contestar las preguntas se utilizó el código que se muestra a continuación. Para manipular los datos se empleó uno de los paquetes vistos en el curso "**data.table**", **p**ara las funciones se utilizó **programación defensiva** y para los gráficos se utilizó **ggplot**.
 
 1.  ¿Cómo ha sido el desempeño (*Rank*) de los equipos de besisbol a traves de los años?: En la gráfica se puede ver que el número de juegos jugados en general ha aumentado a lo largo de los años y ha disminuido su variabilidad, exceptuando algunos años en los que hubo menor cantidad de juegos y mayor varibilidad: 1918, 1919, 1972, 1981, 1994, 1995 y 2020. El número de juegos tuvo un crecimiento rápido entre 1876 y 1900, que se estabilizó después de 1900 y luego tuvo un ligero aumento a partir de 1960. En cuanto al desempeño de los equipos, se puede ver que ha tendido a mejorar, sin embargo, se puede ver que los puntos de cambio en la tendencia se ven rodeados de bajos rendimientos en los equipos.
 
@@ -73,7 +71,7 @@ Para contestar las preguntas se utilizó el siguiente código. Para manipular lo
 
 2.  ¿Cuántos de los equipos en el top 20 de los que han jugado mas juegos, han jugado en casa y han jugado la liga NL? ¿Cuántos la liga AL? ¿Cuáles?
 
-    Para esta pregunta se realizó una función que encontrara el top x de equipos dada una variable. Además, se utilizó **programación defensiva**, uno de los temas vistos en el curso, para asegurar que la función corra adecuadamente y si no que retorne un mensaje indicando el error.
+    Para esta pregunta se realizó una función para encontrar el top x de equipos dada una variable. Además, se utilizó **programación defensiva**, uno de los temas vistos en el curso, para asegurar que la función corra adecuadamente y si no que retorne un mensaje indicando el error.
 
     ```{r}
     #| error: true
@@ -99,19 +97,20 @@ Para contestar las preguntas se utilizó el siguiente código. Para manipular lo
     top_teams(data_dt, "games_played", "20") # wrong top number
     ```
 
-    Ahora que hemos verificado que la función esta bien, podemos utilizarla:
+    Ahora que hemos verificado que la función corre adecuadamente, podemos utilizarla:
 
     ```{r}
-    top_teams_gp = top_teams(data_dt, "games_played", 20) # top 20 teams for games_played
+    top_teams_gp = top_teams(data_dt, "games_played", 20) # top 20 teams per games_played
     team_selected = data_dt[home_games>0 & (team_name %in% top_teams_gp$team_name),.(team_name,league_id)] # select from top teams those that achive the other conditions
     team_selected
 
-    team_selected[,.N,by=league_id] #count number of teams per league
+    team_selected[,.N,by=.(team_name,league_id)] #unique teams per league
+    team_selected[,.N,by=.(team_name,league_id)][,.N,by=league_id] #count of unique teams per league
     ```
 
-    Podemos ver que hay ocho equipos del top 20 de los que han jugado más juegos que cumplen con haber jugado en casa, de estos, dos son de la liga NL (National League) y seis de la liga AL (American League).
+    Podemos ver que hay cinco equipos del top 20 de los que han jugado más juegos que cumplen con haber jugado en casa y que además lo han hecho en varios años ya que se encuentran repetidos. De estos, tres pertenecen a la liga NL (National League) y dos pertenecen a la liga AL (American League).
 
-3.  ¿Cuáles equipos con un nombre de más de dos palabras tienen mas de 3000 outs_pitches y han tenido menos errores que la media por año entre 1950-2020 y a qué ligas pertenecen?
+3.  ¿Cuáles equipos con un nombre de más de tres palabras tienen más de 3000 outs_pitches y han tenido menos errores que la media por año entre 1950-2020 y a qué ligas pertenecen?
 
     Aquí nuevamente se hizo uso del paquete **data.table** , uno de los paquetes vistos en el curso.
 
@@ -121,7 +120,7 @@ Para contestar las preguntas se utilizó el siguiente código. Para manipular lo
     head(data_dt_errors_year[,.(errors,mean_errors_year)])
 
     # Find teams that achive the conditions
-    best_teams = data_dt_errors_year[,length_name := str_count(trimws(data_dt$team_name)," ")][outs_pitches>3000 & errors<mean_errors_year & 1950<year & year<2020 & length_name>2,.(team_name,year,league_id)]
+    best_teams = data_dt_errors_year[,length_name := str_count(trimws(data_dt$team_name)," ")+1][outs_pitches>3000 & errors<mean_errors_year & 1950<year & year<2020 & length_name>3,.(team_name,year,league_id)]
     best_teams
 
     # Compare number of errors of these teams in all years
